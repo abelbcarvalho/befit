@@ -44,7 +44,7 @@ class DAOPeso(IDAOPeso):
             kwargs (dict): valores.
         """
         val = tuple(i for i in kwargs.values())
-        return self.read_person(sql, val)
+        return self._dao.read(sql, val)
 
     def delete_peso(self, peso) -> bool:
         """Deleta um derterminado registro de peso pelo id.

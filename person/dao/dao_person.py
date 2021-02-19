@@ -47,7 +47,7 @@ class DAOPerson(IDAOPerson):
             kwargs (dict): valores.
         """
         val = tuple(i for i in kwargs.values())
-        return self.read_person(sql, val)
+        return self._dao.read(sql, val)
 
     def update_person(self, person) -> bool:
         """Esse metódo irá atualizar informações de

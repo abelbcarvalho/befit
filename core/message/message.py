@@ -68,7 +68,7 @@ class Message:
             'peso-found': 'Erro: Peso Não Encontrado',
             'peso-erro': 'Erro: Peso Não Registrado.',
             'cent-erro': 'Erro: Centimetros Não Registrados.',
-            'cent-found': 'Erro: Centimetros Não Encontrados',
+            'cent-found': 'Erro: Centimetros Não Encontrados.',
             'data-erro': 'Erro: Data Inválida.',
         }
         return info[key] if key in info.keys() else ''

@@ -1,10 +1,11 @@
 from centimetros.service.i_service_centimetros import IServiceCentimetros
 from centimetros.model.Centimetros import Centimetros
+from centimetros.dao.dao_centimetros import DAOCentimetros
 from core.data.data import Data
 from tools.data_check import DataCheck
 from tools.general import is_int_positive, is_none_empty, instance
 from tools.general import is_small_equal, tira_espacos_inicio_final
-from core.message.message import Message
+from core.singleton.sing_message import SingMessage
 
 
 class ServiceCentimetros(IServiceCentimetros):
@@ -18,7 +19,8 @@ class ServiceCentimetros(IServiceCentimetros):
         """Novo service de Centimetros.
         """
         super().__init__()
-        self._msg = Message()
+        self._msg = SingMessage()
+        self._dao = DAOCentimetros()
 
     def create_centimetros(self, centimetros) -> bool:
         """Registra novo Centimetros.
@@ -30,7 +32,7 @@ class ServiceCentimetros(IServiceCentimetros):
             bool: True se centimetros registrado.
         """
         if not instance(objeto=centimetros, classe=Centimetros):
-            self._msg.error(key='instance')
+            SingMessage.messages().error(key='instance')
             return False
         centimetros.comment = tira_espacos_inicio_final(word=centimetros.comment)
         dt = Data()
@@ -39,19 +41,19 @@ class ServiceCentimetros(IServiceCentimetros):
         dt.ano = centimetros.ano
         dc = DataCheck()
         if not dc.is_valid_data(data=dt):
-            self._msg.error(key='data-erro')
+            SingMessage.messages().error(key='data-erro')
             return False
         elif not centimetros.fk > 0:
-            self._msg.error(key='fk-invalid')
+            SingMessage.messages().error(key='fk-invalid')
             return False
         elif is_none_empty(word=centimetros.comment):
-            self._msg.error(key='str-none-empty')
+            SingMessage.messages().error(key='str-none-empty')
             return False
         elif not is_small_equal(word=centimetros.comment, size=50):
-            self._msg.error(key='str-invalid-size')
+            SingMessage.messages().error(key='str-invalid-size')
             return False
         elif is_int_positive(inter=centimetros.cintura):
-            self._msg.error(key='cent-invalid')
+            SingMessage.messages().error(key='cent-invalid')
             return False
         return True
 
@@ -69,7 +71,12 @@ class ServiceCentimetros(IServiceCentimetros):
                 sql += i + '=? '
             else:
                 sql = tira_espacos_inicio_final(word=sql)
-        return 'true'
+        data = self._dao.read_centimetros(sql, **kwargs)
+        if not data:
+            SingMessage.messages().error(key='cent-found')
+            return None
+        else:
+            return data
 
     def delete_centimetros(self, centimetros) -> bool:
         """Deleta um derterminado registro de centimetros pelo id.
@@ -81,12 +88,17 @@ class ServiceCentimetros(IServiceCentimetros):
             bool: True se deletado.
         """
         if not instance(objeto=centimetros, classe=Centimetros):
-            self._msg.error(key='instance')
+            SingMessage.messages().error(key='instance')
             return False
         elif not centimetros.id > 0:
-            self._msg.error(key='id-invalid')
+            SingMessage.messages().error(key='id-invalid')
             return False
-        return True
+        elif self._dao.delete_centimetros(centimetros=centimetros):
+            SingMessage.messages().success(key='cent-del')
+            return True
+        else:
+            SingMessage.messages().error(key='dont-delete')
+            return False
 
     def delete_all_centimetros(self, fk=0) -> bool:
         """Deleta todos os registros de uma pessoa.
@@ -98,6 +110,11 @@ class ServiceCentimetros(IServiceCentimetros):
             bool: True se tudo deletado.
         """
         if not fk > 0:
-            self._msg.error(key='fk-invalid')
+            SingMessage.messages().error(key='fk-invalid')
             return False
-        return True
+        elif self._dao.delete_all_centimetros(fk=fk):
+            SingMessage.messages().success(key='cent-del-all')
+            return True
+        else:
+            SingMessage.messages().error(key='erase')
+            return False

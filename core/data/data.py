@@ -9,6 +9,17 @@ class Data:
         self._mes = 0
         self._ano = 0
 
+    def __str__(self) -> str:
+        """Objeto como string.
+
+        Returns:
+            str: a data formatada.
+        """
+        dat = (str(self.dia), '0'+str(self.dia))[len(str(self.dia)) < 2]
+        dat += '/' + (str(self.mes), '0'+str(self.mes))[len(str(self.mes)) < 2]
+        dat += '/' + str(self.ano)
+        return dat
+
     @property
     def dia(self) -> int:
         return self._dia
@@ -27,7 +38,7 @@ class Data:
 
     @property
     def ano(self) -> int:
-        return self._dia
+        return self._ano
 
     @ano.setter
     def ano(self, ano: int) -> None:

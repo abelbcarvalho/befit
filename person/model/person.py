@@ -20,8 +20,8 @@ class Person(AbsBase):
         self._altura = 0.0
         self._peso_inicial = 0.0
         self._peso_atual = 0.0
-        self._cent_inicial = 0.0
-        self._cent_atual = 0.0
+        self._cent_inicial = 0
+        self._cent_atual = 0
 
     @property
     def nome(self) -> str:
@@ -68,17 +68,17 @@ class Person(AbsBase):
         self._peso_atual = peso_atual
 
     @property
-    def cent_inicial(self) -> float:
+    def cent_inicial(self) -> int:
         return self.cent_inicial
 
     @cent_inicial.setter
-    def cent_inicial(self, cent_inicial: float) -> None:
+    def cent_inicial(self, cent_inicial: int) -> None:
         self._cent_inicial = cent_inicial
 
     @property
-    def cent_atual(self) -> float:
+    def cent_atual(self) -> int:
         return self._cent_atual
 
     @cent_atual.setter
-    def cent_atual(self, cent_atual: float) -> None:
+    def cent_atual(self, cent_atual: int) -> None:
         self._cent_atual = cent_atual

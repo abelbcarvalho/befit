@@ -4,6 +4,7 @@ from core.data.data import Data
 from tools.data_check import DataCheck
 from tools.general import is_int_positive, is_none_empty, instance
 from tools.general import is_small_equal, tira_espacos_inicio_final
+from core.message.message import Message
 
 
 class ServiceCentimetros(IServiceCentimetros):
@@ -17,6 +18,7 @@ class ServiceCentimetros(IServiceCentimetros):
         """Novo service de Centimetros.
         """
         super().__init__()
+        self._msg = Message()
 
     def create_centimetros(self, centimetros) -> bool:
         """Registra novo Centimetros.
@@ -28,6 +30,7 @@ class ServiceCentimetros(IServiceCentimetros):
             bool: True se centimetros registrado.
         """
         if not instance(objeto=centimetros, classe=Centimetros):
+            self._msg.error(key='instance')
             return False
         centimetros.comment = tira_espacos_inicio_final(word=centimetros.comment)
         dt = Data()
@@ -36,14 +39,19 @@ class ServiceCentimetros(IServiceCentimetros):
         dt.ano = centimetros.ano
         dc = DataCheck()
         if not dc.is_valid_data(data=dt):
+            self._msg.error(key='data-erro')
             return False
         elif not centimetros.fk > 0:
+            self._msg.error(key='fk-invalid')
             return False
         elif is_none_empty(word=centimetros.comment):
+            self._msg.error(key='str-none-empty')
             return False
         elif not is_small_equal(word=centimetros.comment, size=50):
+            self._msg.error(key='str-invalid-size')
             return False
         elif is_int_positive(inter=centimetros.cintura):
+            self._msg.error(key='cent-invalid')
             return False
         return True
 
@@ -73,8 +81,12 @@ class ServiceCentimetros(IServiceCentimetros):
             bool: True se deletado.
         """
         if not instance(objeto=centimetros, classe=Centimetros):
+            self._msg.error(key='instance')
             return False
-        return False if not centimetros.id > 0 else True
+        elif not centimetros.id > 0:
+            self._msg.error(key='id-invalid')
+            return False
+        return True
 
     def delete_all_centimetros(self, fk=0) -> bool:
         """Deleta todos os registros de uma pessoa.
@@ -85,4 +97,7 @@ class ServiceCentimetros(IServiceCentimetros):
         Returns:
             bool: True se tudo deletado.
         """
-        return False if not fk > 0 else True
+        if not fk > 0:
+            self._msg.error(key='fk-invalid')
+            return False
+        return True

@@ -4,6 +4,7 @@ from core.data.data import Data
 from tools.data_check import DataCheck
 from tools.general import is_float_positive, is_none_empty, instance
 from tools.general import is_small_equal, tira_espacos_inicio_final
+from core.message.message import Message
 
 
 class ServicePeso(IServicePeso):
@@ -17,6 +18,7 @@ class ServicePeso(IServicePeso):
         """Novo service de Peso.
         """
         super().__init__()
+        self._msg = Message()
 
     def create_peso(self, peso) -> bool:
         """Registra um novo peso.
@@ -28,6 +30,7 @@ class ServicePeso(IServicePeso):
             bool: True se peso registrado.
         """
         if not instance(objeto=peso, classe=Peso):
+            self._msg.error(key='instance')
             return False
         peso.comment = tira_espacos_inicio_final(word=peso.comment)
         dt = Data()
@@ -36,14 +39,19 @@ class ServicePeso(IServicePeso):
         dt.ano = peso.ano
         dc = DataCheck()
         if not dc.is_valid_data(data=dt):
+            self._msg.error(key='data-erro')
             return False
         elif not peso.fk > 0:
+            self._msg.error(key='fk-invalid')
             return False
         elif is_none_empty(word=peso.comment):
+            self._msg.error(key='str-none-empty')
             return False
         elif not is_small_equal(word=peso.comment, size=50):
+            self._msg.error(key='str-invalid-size')
             return False
         elif not is_float_positive(point=peso.peso):
+            self._msg.error(key='peso-invalid')
             return False
         return True
 
@@ -73,8 +81,12 @@ class ServicePeso(IServicePeso):
             bool: True se deletado.
         """
         if not instance(objeto=peso, classe=peso):
+            self._msg.error(key='instance')
             return False
-        return False if not peso.id > 0 else True
+        elif not peso.id > 0:
+            self._msg.error(key='id-invalid')
+            return False
+        return True
 
     def delete_all_peso(self, fk=0) -> bool:
         """Deleta todos os registros de uma pessoa.
@@ -85,4 +97,7 @@ class ServicePeso(IServicePeso):
         Returns:
             bool: True se tudo deletado.
         """
-        return False if not fk > 0 else True
+        if not fk > 0:
+            self._msg.error(key='fk-invalid')
+            return False
+        return True

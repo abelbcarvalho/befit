@@ -3,7 +3,7 @@ class Message:
     """
 
     def __init__(self) -> None:
-        """Mesagem.
+        """Nova Messagem.
         """
         self._msg = ''
 
@@ -49,6 +49,7 @@ class Message:
             key (str, optional): chave. Defaults to ''.
         """
         info = {
+            'instance': 'Erro: Intância Inválida.',
             'str-none-empty': 'Erro: String Nula ou Vazia.',
             'str-invalid-size': 'Erro: String com Tamanho Invalido.',
             'peso-invalid': 'Erro: Peso Inválido.',
@@ -68,7 +69,7 @@ class Message:
             'peso-erro': 'Erro: Peso Não Registrado.',
             'cent-erro': 'Erro: Centimetros Não Registrados.',
             'cent-found': 'Erro: Centimetros Não Encontrados',
-            'data-erro': 'Erro: Data Inválida.'
+            'data-erro': 'Erro: Data Inválida.',
         }
         return info[key] if key in info.keys() else ''
 

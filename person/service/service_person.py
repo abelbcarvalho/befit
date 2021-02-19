@@ -4,6 +4,7 @@ from tools.general import tira_espacos_inicio_final
 from tools.general import is_int_positive, is_float_positive
 from person.service.i_service_person import IServicePerson
 from tools.data_check import DataCheck
+from core.message.message import Message
 
 
 class ServicePerson(IServicePerson):
@@ -18,6 +19,7 @@ class ServicePerson(IServicePerson):
         """
         super().__init__()
         self._dat = DataCheck()
+        self._msg = Message()
 
     def create_person(self, person) -> bool:
         """Registrar Nova Pessoa.
@@ -32,20 +34,28 @@ class ServicePerson(IServicePerson):
         person.nome = tira_espacos_inicio_final(word=person.nome)
         person.sexo = tira_espacos_inicio_final(word=person.sexo)
         if not instance(objeto=person, classe=Person):
+            self._msg.error(key='instance')
             return False
         elif not self._dat.is_valid_data(data=person.data):
+            self._msg.error(key='data-erro')
             return False
         elif is_none_empty(word=person.nome):
+            self._msg.error(key='str-none-empty')
             return False
         elif is_none_empty(word=person.sexo):
+            self._msg.error(key='str-none-empty')
             return False
         elif not is_small_equal(word=person.nome, size=70):
+            self._msg.error(key='str-invalid-size')
             return False
         elif not is_float_positive(point=person.altura):
+            self._msg.error(key='altura-invalid')
             return False
         elif not is_float_positive(point=person.peso_inicial):
+            self._msg.error(key='peso-invalid')
             return False
         elif not is_int_positive(inter=person.cent_inicial):
+            self._msg.error(key='cent-invalid')
             return False
         person.peso_atual = person.peso_inicial
         person.cent_atual = person.cent_inicial
@@ -82,16 +92,22 @@ class ServicePerson(IServicePerson):
         """
         person.nome = tira_espacos_inicio_final(word=person.nome)
         if not instance(objeto=person, classe=Person):
+            self._msg.error(key='instance')
             return False
         elif not person.id > 0:
+            self._msg.error(key='id-invalid')
             return False
         elif is_none_empty(word=person.nome):
+            self._msg.error(key='str-none-empty')
             return False
         elif not is_small_equal(word=person.nome, size=70):
+            self._msg.error(key='str-invalid-size')
             return False
         elif not is_float_positive(point=person.peso_atual):
+            self._msg.error(key='peso-invalid')
             return False
         elif not is_int_positive(inter=person.cent_atual):
+            self._msg.error(key='cent-invalid')
             return False
         return True
 
@@ -105,5 +121,9 @@ class ServicePerson(IServicePerson):
             bool: True se Person deletada.
         """
         if not instance(objeto=person, classe=Person):
+            self._msg.error(key='instance')
             return False
-        return False if not person.id > 0 else True
+        elif not person.id > 0:
+            self._msg.error(key='id-invalid')
+            return False
+        return True

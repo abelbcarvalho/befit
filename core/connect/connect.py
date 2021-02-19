@@ -39,6 +39,9 @@ class Connect:
             'id int not null primary key autoincrement',
             'peso float not null',
             'comment varchar(70) not null',
+            'dia int not null',
+            'mes int not null',
+            'ano int not null',
             'id_person int not null',
             'foreign key (id_person) references tbPerson(id)'
         )
@@ -49,6 +52,9 @@ class Connect:
             'id int not null primary key autoincrement',
             'centimetros int not null',
             'comment varchar(70) not null',
+            'dia int not null',
+            'mes int not null',
+            'ano int not null',
             'id_person int not null',
             'foreign key (id_person) references tbPerson(id)'
         )

@@ -1,7 +1,5 @@
 from core.dao.dao_base import DAOBase
 from person.dao.i_dao_person import IDAOPerson
-from person.model.person import Person
-from core.singleton.sing_message import SingMessage
 
 
 class DAOPerson(IDAOPerson):

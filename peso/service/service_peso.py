@@ -4,7 +4,8 @@ from core.data.data import Data
 from tools.data_check import DataCheck
 from tools.general import is_float_positive, is_none_empty, instance
 from tools.general import is_small_equal, tira_espacos_inicio_final
-from core.message.message import Message
+from core.singleton.sing_message import SingMessage
+from peso.dao.dao_peso import DAOPeso
 
 
 class ServicePeso(IServicePeso):
@@ -18,7 +19,7 @@ class ServicePeso(IServicePeso):
         """Novo service de Peso.
         """
         super().__init__()
-        self._msg = Message()
+        self._dao = DAOPeso()
 
     def create_peso(self, peso) -> bool:
         """Registra um novo peso.
@@ -30,7 +31,7 @@ class ServicePeso(IServicePeso):
             bool: True se peso registrado.
         """
         if not instance(objeto=peso, classe=Peso):
-            self._msg.error(key='instance')
+            SingMessage.messages().error(key='instance')
             return False
         peso.comment = tira_espacos_inicio_final(word=peso.comment)
         dt = Data()
@@ -39,21 +40,26 @@ class ServicePeso(IServicePeso):
         dt.ano = peso.ano
         dc = DataCheck()
         if not dc.is_valid_data(data=dt):
-            self._msg.error(key='data-erro')
+            SingMessage.messages().error(key='data-erro')
             return False
         elif not peso.fk > 0:
-            self._msg.error(key='fk-invalid')
+            SingMessage.messages().error(key='fk-invalid')
             return False
         elif is_none_empty(word=peso.comment):
-            self._msg.error(key='str-none-empty')
+            SingMessage.messages().error(key='str-none-empty')
             return False
         elif not is_small_equal(word=peso.comment, size=50):
-            self._msg.error(key='str-invalid-size')
+            SingMessage.messages().error(key='str-invalid-size')
             return False
         elif not is_float_positive(point=peso.peso):
-            self._msg.error(key='peso-invalid')
+            SingMessage.messages().error(key='peso-invalid')
             return False
-        return True
+        elif self._dao.create_peso(peso=peso):
+            SingMessage.messages().success(key='peso-cre')
+            return True
+        else:
+            SingMessage.messages().error(key='peso-erro')
+            return False
 
     def read_peso(self, sql='select * from tbPeso', **kwargs):
         """Realiza busca na base de dados.
@@ -69,7 +75,12 @@ class ServicePeso(IServicePeso):
                 sql += i + '=? '
             else:
                 sql = tira_espacos_inicio_final(word=sql)
-        return 'true'
+        data = self._dao.read_peso(sql, **kwargs)
+        if not data:
+            SingMessage.messages().error(key='peso-found')
+            return None
+        else:
+            return data
 
     def delete_peso(self, peso) -> bool:
         """Deleta um derterminado registro de peso pelo id.
@@ -81,12 +92,17 @@ class ServicePeso(IServicePeso):
             bool: True se deletado.
         """
         if not instance(objeto=peso, classe=peso):
-            self._msg.error(key='instance')
+            SingMessage.messages().error(key='instance')
             return False
         elif not peso.id > 0:
-            self._msg.error(key='id-invalid')
+            SingMessage.messages().error(key='id-invalid')
             return False
-        return True
+        elif self._dao.delete_peso(peso=peso):
+            SingMessage.messages().success(key='peso-del')
+            return True
+        else:
+            SingMessage.messages().error(key='dont-delete')
+            return False
 
     def delete_all_peso(self, fk=0) -> bool:
         """Deleta todos os registros de uma pessoa.
@@ -98,6 +114,11 @@ class ServicePeso(IServicePeso):
             bool: True se tudo deletado.
         """
         if not fk > 0:
-            self._msg.error(key='fk-invalid')
+            SingMessage.messages().error(key='fk-invalid')
             return False
-        return True
+        elif self._dao.delete_all_peso(fk=fk):
+            SingMessage.messages().success(key='peso-del-all')
+            return True
+        else:
+            SingMessage.messages().error(key='erase')
+            return False

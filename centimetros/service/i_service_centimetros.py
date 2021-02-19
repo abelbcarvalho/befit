@@ -15,5 +15,5 @@ class IServiceCentimetros(metaclass=ABCMeta):
     def delete_centimetros(self, centimetros) -> bool:
         pass
 
-    def delete_all(self, fk=0) -> bool:
+    def delete_all_centimetros(self, fk=0) -> bool:
         pass

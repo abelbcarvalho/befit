@@ -15,5 +15,5 @@ class IServicePeso(metaclass=ABCMeta):
     def delete_peso(self, peso) -> bool:
         pass
 
-    def delete_all(self, fk=0) -> bool:
+    def delete_all_peso(self, fk=0) -> bool:
         pass

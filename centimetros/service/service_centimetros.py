@@ -18,7 +18,7 @@ class ServiceCentimetros(IServiceCentimetros):
         """
         super().__init__()
 
-    def create_Centimetros(self, centimetros: Centimetros) -> bool:
+    def create_centimetros(self, centimetros) -> bool:
         """Registra novo Centimetros.
 
         Args:
@@ -47,7 +47,7 @@ class ServiceCentimetros(IServiceCentimetros):
             return False
         return True
 
-    def read_Centimetros(self, sql='select * from tbCentimetros', **kwargs):
+    def read_centimetros(self, sql='select * from tbCentimetros', **kwargs):
         """Realiza busca na base de dados.
 
         Args:
@@ -76,7 +76,7 @@ class ServiceCentimetros(IServiceCentimetros):
             return False
         return False if not centimetros.id > 0 else True
 
-    def delete_all(self, fk=0) -> bool:
+    def delete_all_centimetros(self, fk=0) -> bool:
         """Deleta todos os registros de uma pessoa.
 
         Args:

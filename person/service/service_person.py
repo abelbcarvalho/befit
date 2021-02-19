@@ -19,7 +19,7 @@ class ServicePerson(IServicePerson):
         super().__init__()
         self._dat = DataCheck()
 
-    def create_person(self, person: Person) -> bool:
+    def create_person(self, person) -> bool:
         """Registrar Nova Pessoa.
 
         Args:
@@ -67,7 +67,7 @@ class ServicePerson(IServicePerson):
                 sql = tira_espacos_inicio_final(word=sql)
         return 'true'
 
-    def update_person(self, person: Person) -> bool:
+    def update_person(self, person) -> bool:
         """Esse metódo irá atualizar informações de
         Person. Ele deverá atualizar:
         - nome;

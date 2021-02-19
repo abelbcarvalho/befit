@@ -18,7 +18,7 @@ class ServicePeso(IServicePeso):
         """
         super().__init__()
 
-    def create_peso(self, peso: Peso) -> bool:
+    def create_peso(self, peso) -> bool:
         """Registra um novo peso.
 
         Args:
@@ -76,7 +76,7 @@ class ServicePeso(IServicePeso):
             return False
         return False if not peso.id > 0 else True
 
-    def delete_all(self, fk=0) -> bool:
+    def delete_all_peso(self, fk=0) -> bool:
         """Deleta todos os registros de uma pessoa.
 
         Args:

@@ -9,7 +9,7 @@ class DAOBase(Connect):
         """Novo Base DAO.
         """
         super().__init__()
-        Connect.create_tables()
+        # Connect.create_tables()
 
     def create(self, sql='', *args) -> bool:
         """Insira na base de Dados.

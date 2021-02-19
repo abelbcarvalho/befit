@@ -52,10 +52,12 @@ class ServiceCentimetros(IServiceCentimetros):
         elif not is_small_equal(word=centimetros.comment, size=50):
             SingMessage.messages().error(key='str-invalid-size')
             return False
-        elif is_int_positive(inter=centimetros.cintura):
-            SingMessage.messages().error(key='cent-invalid')
+        elif self._dao.create_centimetros(centimetros=centimetros):
+            SingMessage.messages().success(key='cent-cre')
+            return True
+        else:
+            SingMessage.messages().error(key='cent-erro')
             return False
-        return True
 
     def read_centimetros(self, sql='select * from tbCentimetros', **kwargs):
         """Realiza busca na base de dados.

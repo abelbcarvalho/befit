@@ -51,9 +51,6 @@ class ServicePeso(IServicePeso):
         elif not is_small_equal(word=peso.comment, size=50):
             SingMessage.messages().error(key='str-invalid-size')
             return False
-        elif not is_float_positive(point=peso.peso):
-            SingMessage.messages().error(key='peso-invalid')
-            return False
         elif self._dao.create_peso(peso=peso):
             SingMessage.messages().success(key='peso-cre')
             return True

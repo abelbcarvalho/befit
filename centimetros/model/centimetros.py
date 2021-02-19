@@ -10,15 +10,15 @@ class Centimetros(AbsBase, Data):
         """Nova Cintura.
         """
         super().__init__()
-        self._cintura = 0.0
+        self._cintura = 0
         self._comment = ''
 
     @property
-    def cintura(self) -> float:
+    def cintura(self) -> int:
         return self._cintura
 
     @cintura.setter
-    def cintura(self, cintura: float) -> None:
+    def cintura(self, cintura: int) -> None:
         self._cintura = cintura
 
     @property

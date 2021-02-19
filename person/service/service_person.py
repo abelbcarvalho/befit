@@ -46,6 +46,10 @@ class ServicePerson(IServicePerson):
         elif is_none_empty(word=person.sexo):
             SingMessage.messages().error(key='str-none-empty')
             return False
+        elif not person.sexo.lower().__eq__('masculino')\
+                and person.sexo.lower().__eq__('feminino'):
+            SingMessage.messages().error(key='sexo-invalid')
+            return False
         elif not is_small_equal(word=person.nome, size=70):
             SingMessage.messages().error(key='str-invalid-size')
             return False
@@ -92,6 +96,7 @@ class ServicePerson(IServicePerson):
         """Esse metódo irá atualizar informações de
         Person. Ele deverá atualizar:
         - nome;
+        - altura;
         - peso atual;
         - centimetro atual;
 
@@ -110,6 +115,9 @@ class ServicePerson(IServicePerson):
             return False
         elif is_none_empty(word=person.nome):
             SingMessage.messages().error(key='str-none-empty')
+            return False
+        elif not is_float_positive(point=person.altura):
+            SingMessage.messages().error(key='altura-invalid')
             return False
         elif not is_small_equal(word=person.nome, size=70):
             SingMessage.messages().error(key='str-invalid-size')

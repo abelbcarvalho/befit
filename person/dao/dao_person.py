@@ -62,10 +62,11 @@ class DAOPerson(IDAOPerson):
         Returns:
             bool: True se atualizado.
         """
-        sql = 'update tbPerson set nome=?, peso_atual=?, cent_atual=? where id=?'
+        sql = 'update tbPerson set nome=?, altura=?, peso_atual=?, cent_atual=? where id=?'
         return self._dao.update(
             sql,
             person.nome,
+            person.altura,
             person.peso_atual,
             person.cent_atual,
             person.id,

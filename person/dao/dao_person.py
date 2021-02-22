@@ -26,13 +26,14 @@ class DAOPerson(IDAOPerson):
             bool: True se a pessoa foi registrada.
         """
         sql = 'insert into tbPerson ('
-        sql += 'id,nome,sexo,dia,mes,ano,peso_inicial,'
+        sql += 'nome,sexo,dia,mes,ano,peso_inicial,'
         sql += 'peso_atual,cent_inicial,cent_atual) values ('
-        sql += 10 * '?,'
+        sql += 9 * '?,'
+        sql = sql[:-1]
         sql += ')'
         return self._dao.create(
             sql,
-            person.id, person.nome,
+            person.nome,
             person.sexo, person.data.dia,
             person.data.mes, person.data.ano,
             person.peso_inicial, person.peso_atual,

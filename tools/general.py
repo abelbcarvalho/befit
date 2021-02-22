@@ -54,7 +54,7 @@ def tira_espacos_inicio_final(word='') -> str:
     Returns:
         str: sem espaços no final e no inicio
     """
-    return word.strip() if is_none_empty(word=word) else None
+    return word.strip() if not is_none_empty(word=word) else None
 
 
 def is_float_positive(point=0.0) -> bool:

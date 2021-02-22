@@ -69,7 +69,7 @@ class Person(AbsBase):
 
     @property
     def cent_inicial(self) -> int:
-        return self.cent_inicial
+        return self._cent_inicial
 
     @cent_inicial.setter
     def cent_inicial(self, cent_inicial: int) -> None:

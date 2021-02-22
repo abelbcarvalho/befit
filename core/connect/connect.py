@@ -17,45 +17,48 @@ class Connect:
             None: Sem Retorno.
         """
         sql = 'create table if not exists {} ('
-        person = sql + 10 * '{}'
+        person = sql + 10 * '{},'
+        person = person[:-1]
         person += ')'
         person = person.format(
             'tbPerson',
-            'id int not null primary key autoincrement',
+            'id integer not null primary key autoincrement',
             'nome varchar(70) not null',
             'sexo varchar(25) not null',
-            'dia int not null',
-            'mes int not null',
-            'ano int not null',
+            'dia integer not null',
+            'mes integer not null',
+            'ano integer not null',
             'peso_inicial float not null',
             'peso_atual float not null',
-            'cent_inicial int not null',
-            'cent_atual int not null'
+            'cent_inicial integer not null',
+            'cent_atual integer not null'
         )
-        peso = sql + 5 * '{}'
+        peso = sql + 5 * '{},'
+        peso = peso[:-1]
         peso += ')'
         peso = peso.format(
             'tbPeso',
-            'id int not null primary key autoincrement',
+            'id integer not null primary key autoincrement',
             'peso float not null',
             'comment varchar(70) not null',
-            'dia int not null',
-            'mes int not null',
-            'ano int not null',
-            'id_person int not null',
+            'dia integer not null',
+            'mes integer not null',
+            'ano integer not null',
+            'id_person integer not null',
             'foreign key (id_person) references tbPerson(id)'
         )
-        cent = sql + 5 * '{}'
+        cent = sql + 5 * '{},'
+        cent = cent[:-1]
         cent += ')'
         cent = cent.format(
             'tbCentimetros',
-            'id int not null primary key autoincrement',
-            'centimetros int not null',
+            'id integer not null primary key autoincrement',
+            'centimetros integer not null',
             'comment varchar(70) not null',
-            'dia int not null',
-            'mes int not null',
-            'ano int not null',
-            'id_person int not null',
+            'dia integer not null',
+            'mes integer not null',
+            'ano integer not null',
+            'id_person integer not null',
             'foreign key (id_person) references tbPerson(id)'
         )
         try:
@@ -63,6 +66,7 @@ class Connect:
             Connect.cursor().execute(person)
             Connect.cursor().execute(peso)
             Connect.cursor().execute(cent)
+            Connect.commit()
         except Exception:
             pass
         finally:

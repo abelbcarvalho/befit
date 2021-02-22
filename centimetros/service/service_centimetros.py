@@ -1,5 +1,5 @@
 from centimetros.service.i_service_centimetros import IServiceCentimetros
-from centimetros.model.Centimetros import Centimetros
+from centimetros.model.centimetros import Centimetros
 from centimetros.dao.dao_centimetros import DAOCentimetros
 from core.data.data import Data
 from tools.data_check import DataCheck

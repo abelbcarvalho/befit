@@ -77,7 +77,18 @@ class ServicePeso(IServicePeso):
             SingMessage.messages().error(key='peso-found')
             return None
         else:
-            return data
+            pesos = []
+            for pe in data:
+                pes = Peso()
+                pes.id = pe[0]
+                pes.peso = pe[1]
+                pes.comment = pe[2]
+                pes.dia = pe[3]
+                pes.mes = pe[4]
+                pes.ano = pe[5]
+                pes.fk = pe[6]
+                pesos.append(pes)
+            return pesos
 
     def delete_peso(self, peso) -> bool:
         """Deleta um derterminado registro de peso pelo id.

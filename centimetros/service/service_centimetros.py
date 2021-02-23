@@ -78,7 +78,18 @@ class ServiceCentimetros(IServiceCentimetros):
             SingMessage.messages().error(key='cent-found')
             return None
         else:
-            return data
+            cent = []
+            for ce in data:
+                cen = Centimetros()
+                cen.id = ce[0]
+                cen.cintura = ce[1]
+                cen.comment = ce[2]
+                cen.dia = ce[3]
+                cen.mes = ce[4]
+                cen.ano = ce[5]
+                cen.fk = ce[6]
+                cent.append(cen)
+            return cent
 
     def delete_centimetros(self, centimetros) -> bool:
         """Deleta um derterminado registro de centimetros pelo id.

@@ -32,7 +32,7 @@ class DAOBase(Connect):
             Connect.open_connect()
             Connect.open_cursor()
             Connect.cursor().execute(sql, args)
-            return Connect.cursor_2().fetchall()
+            return Connect.cursor().fetchall()
         except Exception:
             return None
         finally:

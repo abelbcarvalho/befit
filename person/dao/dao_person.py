@@ -1,6 +1,5 @@
 from core.dao.dao_base import DAOBase
 from person.dao.i_dao_person import IDAOPerson
-from person.model.person import Person
 
 
 class DAOPerson(IDAOPerson):

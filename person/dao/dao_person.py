@@ -50,6 +50,17 @@ class DAOPerson(IDAOPerson):
         val = tuple(i for i in kwargs.values())
         return self._dao.read(sql, val)
 
+    def read_all_person(self, sql):
+        """Busca todas as pessoas.
+
+        Args:
+            sql (str, optional): sql query. Defaults to 'select * from tbPerson'.
+
+        Returns:
+            list: Person instances.
+        """
+        return self._dao.read_all(sql=sql)
+
     def update_person(self, person) -> bool:
         """Esse metódo irá atualizar informações de
         Person. Ele deverá atualizar:
@@ -84,14 +95,3 @@ class DAOPerson(IDAOPerson):
         """
         sql = 'delete from tbPerson where id=?'
         return self._dao.delete(sql=sql, id=person.id)
-
-    def read_all_person(self, sql):
-        """Busca todas as pessoas.
-
-        Args:
-            sql (str, optional): sql query. Defaults to 'select * from tbPerson'.
-
-        Returns:
-            list: Person instances.
-        """
-        return self._dao.read_all(sql=sql)

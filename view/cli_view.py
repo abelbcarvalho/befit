@@ -1,4 +1,5 @@
 from datetime import datetime
+from imc.imc import IMC
 from os import system
 from peso.model.peso import Peso
 from centimetros.model.centimetros import Centimetros
@@ -233,12 +234,13 @@ class CliView:
         print(tc.format(5) + 'Voltar')
         while True:
             try:
-                tc = ':>Sua Escolha:> ' + self._color(key='yellow')
+                tc = self._color(key='blue') + \
+                    ':>Sua Escolha:> ' + self._color(key='yellow')
                 op = int(input(tc))
                 if 4 < op < 6:
                     return self.main()
                 elif 3 < op < 5:
-                    pass
+                    return self._calc_imc()
                 elif 2 < op < 4:
                     self._geren_cent()
                     pass
@@ -398,7 +400,7 @@ class CliView:
         """
         self._clear()
         print(self._stars(color='red'))
-        print('Listagem de Registro de Pesos'+
+        print('Listagem de Registro de Pesos' +
               self._chars(char='|', times=19))
         print(self._stars(color='red'))
         pesos = SingFacade.facade().read_peso()
@@ -543,7 +545,7 @@ class CliView:
         """
         self._clear()
         print(self._stars(color='green'))
-        print('Listagem de Registro de Cinturas'+
+        print('Listagem de Registro de Cinturas' +
               self._chars(char='|', times=16))
         print(self._stars(color='green'))
         cents = SingFacade.facade().read_centimetros()
@@ -572,3 +574,102 @@ class CliView:
         print(self._stars(color='green'))
         a = input('Voltar...')
         return self._geren_cent()
+
+    def _calc_imc(self) -> None:
+        """Realiza Calculo IMC
+        com base nas pessoas cadastradas.
+        """
+        self._clear()
+        persons = SingFacade().facade().read_all_person()
+        imc = IMC()
+        print(self._stars(color='yellow'))
+        print('Calculando IMC' + self._chars(char='|', times=34))
+        print(self._stars(color='yellow'))
+
+        tc = self._color(key='red') + '[{}] ' + \
+            self._color(key='default') + '{}'
+        print('Selecione:')
+        print(tc.format(1, 'Pessoa Existente'))
+        print(tc.format(2, 'Calculo Personalizado'))
+        print(tc.format(3, 'Voltar'))
+        tc, op = self._color(key='blue') + ':>Escolha:> ' + \
+            self._color(key='red'), 0
+        while True:
+            try:
+                op = int(input(tc))
+                if op == 3:
+                    return self._person_manage()
+                elif 0 < op < 3:
+                    break
+            except ValueError:
+                pass
+            finally:
+                print(self._color(key='default'), end='')
+        if op == 1:
+            print(self._stars(color='yellow'))
+            print('Calculo Pessoa Existente')
+            if not persons:
+                tc = self._color(key='red')
+                tc += SingMessage.messages().msg
+                tc += self._color(key='default')
+                print(tc)
+            else:
+                print('Selecione a Pessoa')
+                tc = self._color(key='red') + \
+                    '[{}] ' + self._color(key='default') + '{}'
+                for i in range(persons.__len__() + 1):
+                    try:
+                        print(tc.format(i + 1, persons[i].nome))
+                    except IndexError:
+                        print(tc.format(i + 1, 'Voltar'))
+                else:
+                    tc = self._color(key='blue') + '{}' + \
+                        self._color(key='yellow')
+                    i += 1
+                opt = 0
+                while True:
+                    try:
+                        opt = int(input(tc.format(':>Selecione:> ')))
+                        if opt == i:
+                            return self._calc_imc()
+                        elif 0 > opt or opt > i:
+                            continue
+                        else:
+                            break
+                    except ValueError:
+                        pass
+                    finally:
+                        print(self._color(key='default'), end='')
+                persons = persons[opt-1]
+                print(self._stars(color='yellow'))
+                print('Nome:', persons.nome)
+                print('Altura:', persons.altura)
+                print('Peso:', persons.peso_atual)
+                imc.peso = persons.peso_atual
+                imc.altura = persons.altura
+                print(self._stars(color='yellow'))
+                imc.calc_imc()
+                print(imc)
+        elif op == 2:
+            tc = self._color(key='green') + ':>{}:> ' + \
+                self._color(key='yellow')
+            print(self._stars(color='yellow'))
+            print('Calculo Personalizado')
+            while True:
+                try:
+                    imc.peso = float(input(tc.format('Peso')))
+                    imc.altura = float(input(tc.format('Altura')))
+                    if imc.peso < 0 or imc.altura < 0:
+                        continue
+                    else:
+                        break
+                except ValueError:
+                    pass
+                finally:
+                    print(self._color(key='default'), end='')
+            print(self._stars(color='yellow'))
+            imc.calc_imc()
+            print(imc)
+        print(self._stars(color='yellow'))
+        a = input('Voltar...')
+        return self._person_manage()

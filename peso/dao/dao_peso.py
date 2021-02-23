@@ -24,8 +24,8 @@ class DAOPeso(IDAOPeso):
         Returns:
             bool: True se peso registrado.
         """
-        sql = 'insert into tbPeso (id,peso,comment,dia,mes,'
-        sql += 'ano,id_person) values (?,?,?,?,?,?,?)'
+        sql = 'insert into tbPeso (peso,comment,dia,mes,'
+        sql += 'ano,id_person) values (?,?,?,?,?,?)'
         return self._dao.create(
             sql,
             peso.peso,

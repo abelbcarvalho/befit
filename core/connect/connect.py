@@ -35,7 +35,7 @@ class Connect:
             'cent_inicial integer not null',
             'cent_atual integer not null'
         )
-        peso = sql + 5 * '{},'
+        peso = sql + 8 * '{},'
         peso[:-1]
         peso += ');'
         peso = peso.format(
@@ -49,7 +49,7 @@ class Connect:
             'id_person integer not null',
             'foreign key (id_person) references tbPerson(id)'
         )
-        cent = sql + 5 * '{},'
+        cent = sql + 8 * '{},'
         cent = cent[:-1]
         cent += ');'
         cent = cent.format(
@@ -65,6 +65,7 @@ class Connect:
         )
         try:
             cls.open_connect()
+            cls.open_cursor()
             cls.cursor().execute(person)
             cls.cursor().execute(peso)
             cls.cursor().execute(cent)

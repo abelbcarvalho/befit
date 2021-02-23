@@ -24,11 +24,11 @@ class DAOCentimetros(IDAOCentimetros):
         Returns:
             bool: True se Centimetros registrado.
         """
-        sql = 'insert into tbCentimetros (id,centimetros,comment,dia,mes,'
-        sql += 'ano,id_person) values (?,?,?,?,?,?,?)'
+        sql = 'insert into tbCentimetros (centimetros,comment,dia,mes,'
+        sql += 'ano,id_person) values (?,?,?,?,?,?)'
         return self._dao.create(
             sql,
-            centimetros.centimetros,
+            centimetros.cintura,
             centimetros.comment,
             centimetros.dia,
             centimetros.mes,

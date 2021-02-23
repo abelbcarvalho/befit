@@ -20,6 +20,9 @@ class IFacade(metaclass=ABCMeta):
     def delete_person(self, person) -> bool:
         pass
 
+    def read_all_person(self, sql='select * from tbPerson'):
+        pass
+
     # Peso
 
     def create_peso(self, peso) -> bool:

@@ -26,16 +26,16 @@ class DAOPerson(IDAOPerson):
             bool: True se a pessoa foi registrada.
         """
         sql = 'insert into tbPerson ('
-        sql += 'nome,sexo,dia,mes,ano,peso_inicial,'
+        sql += 'nome,sexo,dia,mes,ano,altura,peso_inicial,'
         sql += 'peso_atual,cent_inicial,cent_atual) values ('
-        sql += 9 * '?,'
+        sql += 10 * '?,'
         sql = sql[:-1]
         sql += ')'
         return self._dao.create(
             sql,
-            person.nome,
-            person.sexo, person.data.dia,
-            person.data.mes, person.data.ano,
+            person.nome, person.sexo,
+            person.data.dia, person.data.mes,
+            person.data.ano, person.altura,
             person.peso_inicial, person.peso_atual,
             person.cent_inicial, person.cent_atual,
         )
@@ -84,3 +84,14 @@ class DAOPerson(IDAOPerson):
         """
         sql = 'delete from tbPerson where id=?'
         return self._dao.delete(sql=sql, id=person.id)
+
+    def read_all_person(self, sql):
+        """Busca todas as pessoas.
+
+        Args:
+            sql (str, optional): sql query. Defaults to 'select * from tbPerson'.
+
+        Returns:
+            list: Person instances.
+        """
+        return self._dao.read_all(sql=sql)

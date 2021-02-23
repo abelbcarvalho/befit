@@ -65,6 +65,17 @@ class Facade:
         """
         return self._serv_person.delete_person(person=person)
 
+    def read_all_person(self, sql='select * from tbPerson'):
+        """Busca todas as pessoas.
+
+        Args:
+            sql (str, optional): sql query. Defaults to 'select * from tbPerson'.
+
+        Returns:
+            list: Person instances.
+        """
+        return self._serv_person.read_all_person(sql=sql)
+
     # Peso
 
     def create_peso(self, peso) -> bool:

@@ -326,14 +326,17 @@ class CliView:
         print(':> ' + self._color(key='green') +
               persons.nome + self._color(key='default'))
         print(tc.format(1) + 'Atualizar Peso')
-        print(tc.format(2) + 'Voltar')
+        print(tc.format(2) + 'Listar Todos os Pesos')
+        print(tc.format(3) + 'Voltar')
         tc = self._color(key='blue') + ':>Sua Escolha:> ' + \
             self._color(key='yellow')
         while True:
             try:
                 op = int(input(tc))
-                if op == 2:
+                if op == 3:
                     return self._geren_peso()
+                elif op == 2:
+                    return self._list_peso_all()
                 elif op == 1:
                     break
             except ValueError:
@@ -389,6 +392,39 @@ class CliView:
             a = input('continue...')
         return self._geren_peso()
 
+    def _list_peso_all(self) -> None:
+        """Listar todos os pesos ganhos
+        ou perdidos.
+        """
+        self._clear()
+        print(self._stars(color='red'))
+        print('Listagem de Registro de Pesos'+
+              self._chars(char='|', times=19))
+        print(self._stars(color='red'))
+        pesos = SingFacade.facade().read_peso()
+        if not pesos:
+            print(SingMessage.messages().msg)
+            print(self._stars(color='red'))
+            a = input('Voltar...')
+            return self._geren_peso()
+        tc = self._color(key='blue') + '{}: ' + self._color(key='yellow')
+        for i in pesos:
+            print(tc.format('ID'), i.id)
+            print(tc.format('Peso'), i.peso)
+            print(
+                tc.format('Data'),
+                '{}/{}/{}'.format(
+                    i.dia if i.dia > 9 else '0' + str(i.dia),
+                    i.mes if i.mes > 9 else '0' + str(i.mes),
+                    i.ano
+                )
+            )
+            print(tc.format('Comentário'), i.comment)
+            print(self._chars(char='-', times=48))
+        print(self._stars(color='red'))
+        a = input('Voltar...')
+        return self._geren_cent()
+
     def _geren_cent(self) -> None:
         """Esse metodo gerencia o peso.
         """
@@ -435,14 +471,17 @@ class CliView:
         print(':> ' + self._color(key='red') +
               persons.nome + self._color(key='default'))
         print(tc.format(1) + 'Atualizar Cintura')
-        print(tc.format(2) + 'Voltar')
+        print(tc.format(2) + 'Listar Todas as Cinturas')
+        print(tc.format(3) + 'Voltar')
         tc = self._color(key='blue') + ':>Sua Escolha:> ' + \
             self._color(key='yellow')
         while True:
             try:
                 op = int(input(tc))
-                if op == 2:
+                if op == 3:
                     return self._geren_cent()
+                elif op == 2:
+                    return self._list_cent_all()
                 elif op == 1:
                     break
             except ValueError:
@@ -496,4 +535,40 @@ class CliView:
             print(tc)
             print(self._stars(color='default'))
             a = input('continue...')
+        return self._geren_cent()
+
+    def _list_cent_all(self) -> None:
+        """Listar todos os centimetros ganhos
+        ou perdidos.
+        """
+        self._clear()
+        print(self._stars(color='green'))
+        print('Listagem de Registro de Cinturas'+
+              self._chars(char='|', times=16))
+        print(self._stars(color='green'))
+        cents = SingFacade.facade().read_centimetros()
+        if not cents:
+            tc = self._color(key='red')
+            tc += SingMessage.messages().msg
+            tc += self._color(key='default')
+            print(tc)
+            print(self._stars(color='green'))
+            a = input('Voltar...')
+            return self._geren_cent()
+        tc = self._color(key='red') + '{}: ' + self._color(key='yellow')
+        for i in cents:
+            print(tc.format('ID'), i.id)
+            print(tc.format('Cintura'), i.cintura)
+            print(
+                tc.format('Data'),
+                '{}/{}/{}'.format(
+                    i.dia if i.dia > 9 else '0' + str(i.dia),
+                    i.mes if i.mes > 9 else '0' + str(i.mes),
+                    i.ano
+                )
+            )
+            print(tc.format('Comentário'), i.comment)
+            print(self._chars(char='-', times=48))
+        print(self._stars(color='green'))
+        a = input('Voltar...')
         return self._geren_cent()

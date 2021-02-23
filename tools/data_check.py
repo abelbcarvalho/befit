@@ -25,8 +25,8 @@ class DataCheck:
             if data.dia > 29:
                 return False
             elif not self._bisexto(ano=data.ano):
-                if data.dia > 28:
-                    return False
+                return False if data.dia > 28 else True
+            return True
         elif self._mes_trinta(mes=data.mes):
             return data.dia < 31
         else:

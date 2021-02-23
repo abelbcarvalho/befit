@@ -182,6 +182,9 @@ class ServicePerson(IServicePerson):
             list: Person instances.
         """
         data = self._dao.read_all_person(sql=sql)
+        if not data:
+            SingMessage.messages().error(key='person-found')
+            return None
         persons = []
         for i in data:
             per = Person()

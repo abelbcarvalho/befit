@@ -1,4 +1,7 @@
+from datetime import datetime
 from os import system
+from peso.model.peso import Peso
+from centimetros.model.centimetros import Centimetros
 from person.model.person import Person
 from core.singleton.sing_facade import SingFacade
 from core.singleton.sing_message import SingMessage
@@ -190,7 +193,7 @@ class CliView:
                 pass
             finally:
                 print(self._color(key='default'), end='')
-        
+
         # centimetros iniciais
         while True:
             try:
@@ -236,10 +239,11 @@ class CliView:
                     return self.main()
                 elif 3 < op < 5:
                     pass
-                elif 2 < op < 3:
+                elif 2 < op < 4:
+                    self._geren_cent()
                     pass
-                elif 1 < op < 2:
-                    pass
+                elif 1 < op < 3:
+                    self._geren_peso()
                 elif 0 < op < 2:
                     self._list_all_persons()
                 else:
@@ -275,3 +279,221 @@ class CliView:
             print(self._chars(char='-', times=48))
         per = input('Voltar...')
         self._person_manage()
+
+    def _geren_peso(self) -> None:
+        """Esse metodo gerencia o peso.
+        """
+        self._clear()
+        print(self._stars(color='red'))
+        print('Gerenciando Peso' + self._chars(char='|', times=32))
+        print(self._stars(color='red'))
+        persons = SingFacade.facade().read_all_person()
+        if not persons:
+            print(self._stars(color='red'))
+            print(SingMessage.messages().msg)
+            print(self._stars(color='red'))
+            a = input('voltar...')
+            return self._person_manage()
+        print('Selecione uma Pessoa')
+        print(self._chars(char='-', times=48))
+        tc = self._color(key='yellow') + '[{}] ' + self._color(key='default')
+        for i in range(persons.__len__() + 1):
+            try:
+                print(tc.format(i + 1) + persons[i].nome)
+            except IndexError:
+                print(tc.format(i + 1) + 'Voltar')
+        else:
+            tc = self._color(key='blue') + ':>Sua Escolha:> ' + \
+                self._color(key='yellow')
+            i += 1
+        while True:
+            try:
+                op = int(input(tc))
+                if 0 > op or op > i:
+                    continue
+                elif op == i:
+                    return self._person_manage()
+                persons = persons[op-1]
+                break
+            except ValueError:
+                pass
+            finally:
+                print(self._color(key='default'), end='')
+        tc = self._color(key='yellow') + \
+            '[{}] ' + self._color(key='default')
+        print(self._stars(color='yellow'))
+        print('Escolha Entre:')
+        print(':> ' + self._color(key='green') +
+              persons.nome + self._color(key='default'))
+        print(tc.format(1) + 'Atualizar Peso')
+        print(tc.format(2) + 'Voltar')
+        tc = self._color(key='blue') + ':>Sua Escolha:> ' + \
+            self._color(key='yellow')
+        while True:
+            try:
+                op = int(input(tc))
+                if op == 2:
+                    return self._geren_peso()
+                elif op == 1:
+                    break
+            except ValueError:
+                pass
+            finally:
+                print(self._color(key='default'), end='')
+        print(self._stars(color='blue'))
+        print(':> ' + self._color(key='red') +
+              persons.nome + self._color(key='default'))
+        tc = self._color(key='green') + ':>Peso Atual:> ' + \
+            self._color(key='yellow')
+        i = persons.peso_atual
+        print(':>Antigo Peso:> ' + self._color('yellow') +
+              str(i) + self._color(key='default'))
+        while True:
+            try:
+                persons.peso_atual = float(input(tc))
+                if persons.peso_atual > 0:
+                    break
+            except ValueError:
+                pass
+            finally:
+                print(self._color(key='default'), end='')
+        if not SingFacade.facade().update_person(person=persons):
+            print(self._stars(color='red'))
+            print(SingMessage.messages().msg)
+            print(self._stars(color='red'))
+            a = input('continue...')
+            return self._person_manage()
+        peso = Peso()
+        peso.fk = persons.id
+        peso.peso = persons.peso_atual - i
+        tc = self._color(key='green') + ':>Comentário:> ' + \
+            self._color('yellow')
+        peso.comment = input(tc)
+        peso.dia = datetime.now().day
+        peso.mes = datetime.now().month
+        peso.ano = datetime.now().year
+        print(self._stars(color='default'))
+        if SingFacade.facade().create_peso(peso=peso):
+            tc = self._color('blue')
+            tc += SingMessage.messages().msg
+            tc += self._color('default')
+            print(tc)
+            print(self._stars(color='default'))
+            a = input('continue...')
+        else:
+            tc = self._color('red')
+            tc += SingMessage.messages().msg
+            tc += self._color('default')
+            print(tc)
+            print(self._stars(color='default'))
+            a = input('continue...')
+        return self._geren_peso()
+
+    def _geren_cent(self) -> None:
+        """Esse metodo gerencia o peso.
+        """
+        self._clear()
+        print(self._stars(color='blue'))
+        print('Gerenciando Centimetros' + self._chars(char='|', times=25))
+        print(self._stars(color='blue'))
+        persons = SingFacade.facade().read_all_person()
+        if not persons:
+            print(self._stars(color='default'))
+            print(SingMessage.messages().msg)
+            print(self._stars(color='default'))
+            a = input('voltar...')
+            return self._person_manage()
+        print('Selecione uma Pessoa')
+        print(self._chars(char='-', times=48))
+        tc = self._color(key='yellow') + '[{}] ' + self._color(key='default')
+        for i in range(persons.__len__() + 1):
+            try:
+                print(tc.format(i + 1) + persons[i].nome)
+            except IndexError:
+                print(tc.format(i + 1) + 'Voltar')
+        else:
+            tc = self._color(key='red') + ':>Sua Escolha:> ' + \
+                self._color(key='yellow')
+            i += 1
+        while True:
+            try:
+                op = int(input(tc))
+                if 0 > op or op > i:
+                    continue
+                elif op == i:
+                    return self._person_manage()
+                persons = persons[op-1]
+                break
+            except ValueError:
+                pass
+            finally:
+                print(self._color(key='default'), end='')
+        tc = self._color(key='yellow') + \
+            '[{}] ' + self._color(key='default')
+        print(self._stars(color='yellow'))
+        print('Escolha Entre:')
+        print(':> ' + self._color(key='red') +
+              persons.nome + self._color(key='default'))
+        print(tc.format(1) + 'Atualizar Cintura')
+        print(tc.format(2) + 'Voltar')
+        tc = self._color(key='blue') + ':>Sua Escolha:> ' + \
+            self._color(key='yellow')
+        while True:
+            try:
+                op = int(input(tc))
+                if op == 2:
+                    return self._geren_cent()
+                elif op == 1:
+                    break
+            except ValueError:
+                pass
+            finally:
+                print(self._color(key='default'), end='')
+        print(self._stars(color='green'))
+        print(':> ' + self._color(key='red') +
+              persons.nome + self._color(key='default'))
+        tc = self._color(key='blue') + ':>Cintura Atual:> ' + \
+            self._color(key='yellow')
+        i = persons.cent_atual
+        print(':>Antiga Cintura:> ' + self._color('yellow') +
+              str(i) + self._color(key='default'))
+        while True:
+            try:
+                persons.cent_atual = float(input(tc))
+                if persons.peso_atual > 0:
+                    break
+            except ValueError:
+                pass
+            finally:
+                print(self._color(key='default'), end='')
+        if not SingFacade.facade().update_person(person=persons):
+            print(self._stars(color='red'))
+            print(SingMessage.messages().msg)
+            print(self._stars(color='red'))
+            a = input('continue...')
+            return self._person_manage()
+        cent = Centimetros()
+        cent.fk = persons.id
+        cent.cintura = persons.cent_atual - i
+        tc = self._color(key='green') + ':>Comentário:> ' + \
+            self._color('yellow')
+        cent.comment = input(tc)
+        cent.dia = datetime.now().day
+        cent.mes = datetime.now().month
+        cent.ano = datetime.now().year
+        print(self._stars(color='default'))
+        if SingFacade.facade().create_centimetros(centimetros=cent):
+            tc = self._color('blue')
+            tc += SingMessage.messages().msg
+            tc += self._color('default')
+            print(tc)
+            print(self._stars(color='default'))
+            a = input('continue...')
+        else:
+            tc = self._color('red')
+            tc += SingMessage.messages().msg
+            tc += self._color('default')
+            print(tc)
+            print(self._stars(color='default'))
+            a = input('continue...')
+        return self._geren_cent()

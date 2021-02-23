@@ -31,9 +31,10 @@ class CliView:
                     print(self._stars(color='default'))
                     print(ex)
                     print(self._stars(color='blue'))
-                    return False
+                    ex = input('continue...')
+                    quit()
                 elif 1 < self.choose < 3:
-                    pass
+                    self._person_manage()
                 elif 0 < self.choose < 2:
                     self._create_person()
                 else:
@@ -128,6 +129,7 @@ class CliView:
         print('Registrando Nova Pessoa' + self._chars(char='|', times=25))
         print(self._stars(color='green'))
         print('Registre Uma Pessoa!')
+        print(self._stars(color='green'))
         person = Person()
 
         person.nome = input('Nome: '+self._color(key='yellow'))
@@ -211,3 +213,65 @@ class CliView:
             print(self._color(key='blue')+a)
         print(self._stars(color='grey'))
         a = input('pause')
+
+    def _person_manage(self) -> None:
+        """Aqui é possível gerenciar uma pessoa
+        que está a emagrecer.
+        """
+        self._clear()
+        print(self._stars(color='red'))
+        print('Gerenciando Pessoa' + self._chars(char='|', times=30))
+        print(self._stars(color='red'))
+        tc = self._color(key='yellow') + '[{}] ' + self._color(key='default')
+        print(tc.format(1) + 'Lista de Pessoas')
+        print(tc.format(2) + 'Gerenciar Peso')
+        print(tc.format(3) + 'Gerenciar Centimetros')
+        print(tc.format(4) + 'Calcular IMC')
+        print(tc.format(5) + 'Voltar')
+        while True:
+            try:
+                tc = ':>Sua Escolha:> ' + self._color(key='yellow')
+                op = int(input(tc))
+                if 4 < op < 6:
+                    return self.main()
+                elif 3 < op < 5:
+                    pass
+                elif 2 < op < 3:
+                    pass
+                elif 1 < op < 2:
+                    pass
+                elif 0 < op < 2:
+                    self._list_all_persons()
+                else:
+                    pass
+            except ValueError:
+                pass
+            finally:
+                print(self._color(key='default'), end='')
+
+    def _list_all_persons(self) -> None:
+        """Lista de todas as pessoas registradas
+        """
+        self._clear()
+        pers = SingFacade.facade().read_all_person()
+        if not pers:
+            print(self._color(key='red') + SingMessage.messages().msg)
+            a = input(self._color(key='default') + 'pause')
+            return self._person_manage()
+        tc = self._color(key='blue') + '{}' + self._color(key='default')
+        print(self._stars('yellow'))
+        print('Listagem de Pessoas')
+        print(self._stars('yellow'))
+        for per in pers:
+            print(tc.format('ID: '), per.id)
+            print(tc.format('Nome: '), per.nome)
+            print(tc.format('Sexo: '), per.sexo)
+            print(tc.format('Data Nas: '), per.data)
+            print(tc.format('Altura: '), per.altura)
+            print(tc.format('Peso Inicial: '), per.peso_inicial)
+            print(tc.format('Peso Atual: '), per.peso_atual)
+            print(tc.format('Cintura Inicial: '), per.cent_inicial)
+            print(tc.format('Cintura Atual: '), per.cent_atual)
+            print(self._chars(char='-', times=48))
+        per = input('Voltar...')
+        self._person_manage()

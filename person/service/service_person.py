@@ -47,7 +47,7 @@ class ServicePerson(IServicePerson):
             SingMessage.messages().error(key='str-none-empty')
             return False
         elif not person.sexo.lower().__eq__('masculino')\
-                and person.sexo.lower().__eq__('feminino'):
+                and not person.sexo.lower().__eq__('feminino'):
             SingMessage.messages().error(key='sexo-invalid')
             return False
         elif not is_small_equal(word=person.nome, size=70):
@@ -90,7 +90,22 @@ class ServicePerson(IServicePerson):
             SingMessage.messages().error(key='person-found')
             return None
         else:
-            return data
+            persons = []
+            for i in data:
+                per = Person()
+                per.id = i[0]
+                per.nome = i[1]
+                per.sexo = i[2]
+                per.data.dia = i[3]
+                per.data.mes = i[4]
+                per.data.ano = i[5]
+                per.altura = i[6]
+                per.peso_inicial = i[7]
+                per.peso_atual = i[8]
+                per.cent_inicial = i[9]
+                per.cent_atual = i[10]
+                persons.append(per)
+            return persons
 
     def update_person(self, person) -> bool:
         """Esse metódo irá atualizar informações de
@@ -156,3 +171,30 @@ class ServicePerson(IServicePerson):
         else:
             SingMessage.messages().error(key='dont-delete')
             return False
+
+    def read_all_person(self, sql='select * from tbPerson'):
+        """Busca todas as pessoas.
+
+        Args:
+            sql (str, optional): sql query. Defaults to 'select * from tbPerson'.
+
+        Returns:
+            list: Person instances.
+        """
+        data = self._dao.read_all_person(sql=sql)
+        persons = []
+        for i in data:
+            per = Person()
+            per.id = i[0]
+            per.nome = i[1]
+            per.sexo = i[2]
+            per.data.dia = i[3]
+            per.data.mes = i[4]
+            per.data.ano = i[5]
+            per.altura = i[6]
+            per.peso_inicial = i[7]
+            per.peso_atual = i[8]
+            per.cent_inicial = i[9]
+            per.cent_atual = i[10]
+            persons.append(per)
+        return persons

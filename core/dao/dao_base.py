@@ -30,8 +30,26 @@ class DAOBase(Connect):
         """
         try:
             Connect.open_connect()
+            Connect.open_cursor()
             Connect.cursor().execute(sql, args)
-            return [i for i in Connect.cursor().fetchall()]
+            return Connect.cursor_2().fetchall()
+        except Exception:
+            return None
+        finally:
+            Connect.close_connect()
+
+    def read_all(self, sql=''):
+        """Esse metodo faz busca dentro da base de dados.
+        Todos os dados.
+
+        Args:
+            sql (str, optional): sql query. Defaults to ''.
+        """
+        try:
+            Connect.open_connect()
+            Connect.open_cursor()
+            Connect.cursor().execute(sql)
+            return Connect.cursor().fetchall()
         except Exception:
             return None
         finally:
@@ -64,6 +82,7 @@ class DAOBase(Connect):
         """
         try:
             Connect.open_connect()
+            Connect.open_cursor()
             Connect.cursor().execute(sql, args)
             Connect.commit()
             return True

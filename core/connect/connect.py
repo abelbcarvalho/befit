@@ -7,6 +7,7 @@ class Connect:
     """
 
     _conexao = None
+    _cursor = None
 
     @classmethod
     def create_tables(cls):
@@ -17,9 +18,9 @@ class Connect:
             None: Sem Retorno.
         """
         sql = 'create table if not exists {} ('
-        person = sql + 10 * '{},'
+        person = sql + 11 * '{},'
         person = person[:-1]
-        person += ')'
+        person += ');'
         person = person.format(
             'tbPerson',
             'id integer not null primary key autoincrement',
@@ -28,6 +29,7 @@ class Connect:
             'dia integer not null',
             'mes integer not null',
             'ano integer not null',
+            'altura float not null',
             'peso_inicial float not null',
             'peso_atual float not null',
             'cent_inicial integer not null',
@@ -35,7 +37,7 @@ class Connect:
         )
         peso = sql + 5 * '{},'
         peso = peso[:-1]
-        peso += ')'
+        peso += ');'
         peso = peso.format(
             'tbPeso',
             'id integer not null primary key autoincrement',
@@ -49,7 +51,7 @@ class Connect:
         )
         cent = sql + 5 * '{},'
         cent = cent[:-1]
-        cent += ')'
+        cent += ');'
         cent = cent.format(
             'tbCentimetros',
             'id integer not null primary key autoincrement',
@@ -62,15 +64,15 @@ class Connect:
             'foreign key (id_person) references tbPerson(id)'
         )
         try:
-            Connect.open_connect()
-            Connect.cursor().execute(person)
-            Connect.cursor().execute(peso)
-            Connect.cursor().execute(cent)
-            Connect.commit()
+            cls.open_connect()
+            cls.cursor().execute(person)
+            cls.cursor().execute(peso)
+            cls.cursor().execute(cent)
+            cls.commit()
         except Exception:
             pass
         finally:
-            Connect.close_connect()
+            cls.close_connect()
 
     @classmethod
     def open_connect(cls):
@@ -97,13 +99,13 @@ class Connect:
         cls._conexao = None
 
     @classmethod
-    def cursor(cls):
+    def open_cursor(cls):
         """Cursor da conexão.
 
         Returns:
             Cursor: cursor da conexão.
         """
-        return None if not cls.conexao() else cls.conexao().cursor()
+        cls._cursor = None if not cls.conexao() else cls.conexao().cursor()
 
     @classmethod
     def commit(cls):
@@ -119,3 +121,7 @@ class Connect:
     @classmethod
     def conexao(cls):
         return cls._conexao
+
+    @classmethod
+    def cursor(cls):
+        return cls._cursor

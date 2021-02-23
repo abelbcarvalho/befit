@@ -31,7 +31,10 @@ class DAOBase(Connect):
         try:
             Connect.open_connect()
             Connect.open_cursor()
-            Connect.cursor().execute(sql, args)
+            if not args:
+                Connect.cursor().execute(sql)
+            else:
+                Connect.cursor().execute(sql, args)
             return Connect.cursor().fetchall()
         except Exception:
             return None

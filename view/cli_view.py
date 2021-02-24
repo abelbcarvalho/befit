@@ -329,14 +329,17 @@ class CliView:
               persons.nome + self._color(key='default'))
         print(tc.format(1) + 'Atualizar Peso')
         print(tc.format(2) + 'Listar Todos os Pesos')
-        print(tc.format(3) + 'Voltar')
+        print(tc.format(3) + 'Deletar Peso Pelo ID')
+        print(tc.format(4) + 'Voltar')
         tc = self._color(key='blue') + ':>Sua Escolha:> ' + \
             self._color(key='yellow')
         while True:
             try:
                 op = int(input(tc))
-                if op == 3:
+                if op == 4:
                     return self._geren_peso()
+                elif op == 3:
+                    return self._deletar_peso()
                 elif op == 2:
                     return self._list_peso_all()
                 elif op == 1:
@@ -399,17 +402,20 @@ class CliView:
         ou perdidos.
         """
         self._clear()
-        print(self._stars(color='red'))
+        print(self._stars(color='blue'))
         print('Listagem de Registro de Pesos' +
               self._chars(char='|', times=19))
-        print(self._stars(color='red'))
+        print(self._stars(color='blue'))
         pesos = SingFacade.facade().read_peso()
         if not pesos:
-            print(SingMessage.messages().msg)
-            print(self._stars(color='red'))
+            tc = self._color(key='red')
+            tc += SingMessage.messages().msg
+            tc += self._color(key='default')
+            print(tc)
+            print(self._stars(color='blue'))
             a = input('Voltar...')
             return self._geren_peso()
-        tc = self._color(key='blue') + '{}: ' + self._color(key='yellow')
+        tc = self._color(key='green') + '{}: ' + self._color(key='yellow')
         for i in pesos:
             print(tc.format('ID'), i.id)
             print(tc.format('Peso'), i.peso)
@@ -423,9 +429,9 @@ class CliView:
             )
             print(tc.format('Comentário'), i.comment)
             print(self._chars(char='-', times=48))
-        print(self._stars(color='red'))
+        print(self._stars(color='blue'))
         a = input('Voltar...')
-        return self._geren_cent()
+        return self._geren_peso()
 
     def _geren_cent(self) -> None:
         """Esse metodo gerencia o peso.
@@ -474,14 +480,17 @@ class CliView:
               persons.nome + self._color(key='default'))
         print(tc.format(1) + 'Atualizar Cintura')
         print(tc.format(2) + 'Listar Todas as Cinturas')
-        print(tc.format(3) + 'Voltar')
+        print(tc.format(3) + 'Deletar Cintura')
+        print(tc.format(4) + 'Voltar')
         tc = self._color(key='blue') + ':>Sua Escolha:> ' + \
             self._color(key='yellow')
         while True:
             try:
                 op = int(input(tc))
-                if op == 3:
+                if op == 4:
                     return self._geren_cent()
+                elif op == 3:
+                    return self._deletar_cintura()
                 elif op == 2:
                     return self._list_cent_all()
                 elif op == 1:
@@ -673,3 +682,65 @@ class CliView:
         print(self._stars(color='yellow'))
         a = input('Voltar...')
         return self._person_manage()
+
+    def _deletar_peso(self) -> None:
+        """Metodo que irá deletá a cinutra.
+        """
+        print(self._stars(color='yellow'))
+        print('Deletando Peso Pelo ID')
+        tc = self._color(key='red') + ':>{}:> ' + self._color(key='yellow')
+        tc, peso = tc.format('Digite ID'), Peso()
+        while True:
+            try:
+                peso.id = int(input(tc))
+                if peso.id > 0:
+                    break
+            except ValueError:
+                pass
+            finally:
+                print(self._color(key='default'), end='')
+        print(self._stars(color='default'))
+        if SingFacade.facade().delete_peso(peso=peso):
+            tc = self._color(key='blue')
+            tc += SingMessage.messages().msg
+            tc += self._color(key='default')
+            print(tc)
+        else:
+            tc = self._color(key='red')
+            tc += SingMessage.messages().msg
+            tc += self._color(key='default')
+            print(tc)
+        print(self._stars(color='default'))
+        tc = input('Voltar...')
+        return self._geren_peso()
+
+    def _deletar_cintura(self) -> None:
+        """Metodo que irá deletá a cinutra.
+        """
+        print(self._stars(color='yellow'))
+        print('Deletando Cintura Pelo ID')
+        tc = self._color(key='red') + ':>{}:> ' + self._color(key='yellow')
+        tc, cent = tc.format('Digite ID'), Centimetros()
+        while True:
+            try:
+                cent.id = int(input(tc))
+                if cent.id > 0:
+                    break
+            except ValueError:
+                pass
+            finally:
+                print(self._color(key='default'), end='')
+        print(self._stars(color='default'))
+        if SingFacade.facade().delete_centimetros(centimetros=cent):
+            tc = self._color(key='blue')
+            tc += SingMessage.messages().msg
+            tc += self._color(key='default')
+            print(tc)
+        else:
+            tc = self._color(key='red')
+            tc += SingMessage.messages().msg
+            tc += self._color(key='default')
+            print(tc)
+        print(self._stars(color='default'))
+        tc = input('Voltar...')
+        return self._geren_cent()

@@ -99,7 +99,7 @@ class ServicePeso(IServicePeso):
         Returns:
             bool: True se deletado.
         """
-        if not instance(objeto=peso, classe=peso):
+        if not instance(objeto=peso, classe=Peso):
             SingMessage.messages().error(key='instance')
             return False
         elif not peso.id > 0:

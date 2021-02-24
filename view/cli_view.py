@@ -29,7 +29,7 @@ class CliView:
                         self._color(key='yellow')
                     )
                 )
-                if 2 < self.choose < 4:
+                if 3 < self.choose < 5:
                     ex = self._color(
                         key='red') + 'Você Escolheu Sair!!!' + self._color('default')
                     print(self._stars(color='default'))
@@ -37,6 +37,8 @@ class CliView:
                     print(self._stars(color='blue'))
                     ex = input('continue...')
                     quit()
+                elif 2 < self._choose < 4:
+                    self._delete_person()
                 elif 1 < self.choose < 3:
                     self._person_manage()
                 elif 0 < self.choose < 2:
@@ -53,14 +55,16 @@ class CliView:
         """
         self._clear()
         print(self._stars(color='blue'))
-        print('Escolha Uma das Alternativas' + self._chars(char='|', times=20))
+        tc = '{}' + self._chars(char='|', times=20)
+        tc = tc.format('Escolha Uma das Alternativas')
+        print(tc)
         print(self._stars(color='blue'))
-        print(self._color('yellow')+'[1] ' +
-              self._color('default')+'Registrar Pessoa')
-        print(self._color('yellow')+'[2] ' +
-              self._color('default')+'Gerenciar Pessoa')
-        print(self._color('yellow')+'[3] ' +
-              self._color('default')+'Sair da Aplicação')
+        tc = self._color(key='yellow') + \
+            '[{}]' + self._color(key='default') + ' {}'
+        print(tc.format(1, 'Registrar Pessoa'))
+        print(tc.format(2, 'Gerenciar Pessoa'))
+        print(tc.format(3, 'Deletar Pessoa'))
+        print(tc.format(4, 'Sair da Aplicação'))
         print(self._stars(color='green'))
 
     def _color(self, key='') -> str:
@@ -258,28 +262,8 @@ class CliView:
     def _list_all_persons(self) -> None:
         """Lista de todas as pessoas registradas
         """
-        self._clear()
         pers = SingFacade.facade().read_all_person()
-        if not pers:
-            print(self._color(key='red') + SingMessage.messages().msg)
-            a = input(self._color(key='default') + 'pause')
-            return self._person_manage()
-        tc = self._color(key='blue') + '{}' + self._color(key='default')
-        print(self._stars('yellow'))
-        print('Listagem de Pessoas')
-        print(self._stars('yellow'))
-        for per in pers:
-            print(tc.format('ID: '), per.id)
-            print(tc.format('Nome: '), per.nome)
-            print(tc.format('Sexo: '), per.sexo)
-            print(tc.format('Data Nas: '), per.data)
-            print(tc.format('Altura: '), per.altura)
-            print(tc.format('Peso Inicial: '), per.peso_inicial)
-            print(tc.format('Peso Atual: '), per.peso_atual)
-            print(tc.format('Cintura Inicial: '), per.cent_inicial)
-            print(tc.format('Cintura Atual: '), per.cent_atual)
-            print(self._chars(char='-', times=48))
-        per = input('Voltar...')
+        self._list_persons(persons=pers)
         self._person_manage()
 
     def _geren_peso(self) -> None:
@@ -744,3 +728,102 @@ class CliView:
         print(self._stars(color='default'))
         tc = input('Voltar...')
         return self._geren_cent()
+
+    def _delete_person(self) -> None:
+        """Realiza exclusão de Person.
+        """
+        self._clear()
+        print(self._stars(color='red'))
+        print('Deletando Pessoa')
+        print('Esse metódo também:')
+        print('Deleta Peso e Centimetros')
+        print(self._stars(color='red'))
+        # resgatando pessoas registradas
+        persons = SingFacade.facade().read_all_person()
+        tc = self._color(key='yellow')
+        tc += '[{}] '
+        tc += self._color(key='blue')
+        tc += '{}' + self._color(key='default')
+        # ecolha de usuário
+        print('Escolha Uma Alternativa')
+        print(tc.format(1, 'Listar Pessoas'))
+        print(tc.format(2, 'Excluir Pelo ID'))
+        print(tc.format(3, 'Voltar'))
+        print(self._stars(color='red'))
+        tc = self._color(key='green') + ':>{}:> '
+        tc += self._color(key='yellow')
+        opt = 0
+        # pegando o valor de escolha
+        while True:
+            try:
+                opt = int(input(tc.format('Alternativa')))
+                if opt == 3:
+                    return self.main()
+                elif opt == 2:
+                    break
+                elif opt == 1:
+                    return self._list_persons(persons=persons, with_return=True)
+            except ValueError:
+                pass
+            finally:
+                print(self._color(key='default'), end='')
+        tc = self._color(key='red')
+        tc += ':>{}:> ' + self._color(key='yellow')
+        person, cent, peso = Person(), 0, 0
+        print(self._stars(color='default'))
+        while True:
+            try:
+                person.id = int(input(tc.format('Digite ID Pessoa')))
+                peso = person.id
+                cent = person.id
+                break
+            except ValueError:
+                pass
+            finally:
+                print(self._color(key='default'), end='')
+        # excluindo pesos e centimetros
+        SingFacade.facade().delete_all_peso(fk=peso)
+        SingFacade.facade().delete_all_centimetros(fk=cent)
+        # excluindo pessoa
+        print(self._stars(color='red'))
+        if SingFacade.facade().delete_person(person=person):
+            tc = self._color('blue') + '{}' + self._color(key='default')
+            print(tc.format(SingMessage.messages().msg))
+        else:
+            tc = self._color('green') + '{}' + self._color(key='default')
+            print(tc.format(SingMessage.messages().msg))
+        print(self._stars(color='red'))
+        tc = input('Voltar...')
+        return self.main()
+
+    def _list_persons(self, persons: list, with_return=False) -> None:
+        """Faz a listagem de Persons somente.
+
+        Args:
+            persons (list): Lista de Persons.
+            with_return (bool): define se haverá retorno. Defaults to False
+        """
+        self._clear()
+        print(self._stars('yellow'))
+        if not persons:
+            print(self._color(key='red') + SingMessage.messages().msg)
+            print(self._stars('yellow'))
+            a = input('pause')
+            return self._person_manage() if not with_return else self._delete_person()
+        tc = self._color(key='blue') + '{}' + self._color(key='default')
+        print('Listagem de Pessoas')
+        print(self._stars('yellow'))
+        for per in persons:
+            print(tc.format('ID: '), per.id)
+            print(tc.format('Nome: '), per.nome)
+            print(tc.format('Sexo: '), per.sexo)
+            print(tc.format('Data Nas: '), per.data)
+            print(tc.format('Altura: '), per.altura)
+            print(tc.format('Peso Inicial: '), per.peso_inicial)
+            print(tc.format('Peso Atual: '), per.peso_atual)
+            print(tc.format('Cintura Inicial: '), per.cent_inicial)
+            print(tc.format('Cintura Atual: '), per.cent_atual)
+            print(self._chars(char='-', times=48))
+        per = input('Voltar...')
+        if with_return:
+            return self._delete_person()
